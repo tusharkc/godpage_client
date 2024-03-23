@@ -10,8 +10,6 @@ const AppRoutes = () => {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.appAuth.user);
 
-  console.log("currentUser", currentUser);
-
   useEffect(() => {
     if (!nonProtectedRoutes.includes(pathname) && !currentUser) {
       navigate(appInternalRoutes.APP_LOG_IN);
