@@ -3,6 +3,10 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { appInternalRoutes } from "../../../constants/appInternalRoutes";
+import {
+  useLoginMutation,
+  useSignUpMutation,
+} from "../../../service/appAuth.service";
 
 const LoginOrSignup = ({ isSignupWorkFlow }) => {
   return (
@@ -28,6 +32,8 @@ const LoginOrSignup = ({ isSignupWorkFlow }) => {
 
 const LoginWorkflow = () => {
   const navigate = useNavigate();
+  const [login] = useLoginMutation();
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -40,8 +46,14 @@ const LoginWorkflow = () => {
         .min(8, "Password is too short - should be 8 chars minimum.")
         .required("Required"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await login(values)
+        .then(() => {
+          navigate(appInternalRoutes.PROMPT);
+        })
+        .catch((error) => {
+          console.log("error at login method", error);
+        });
     },
   });
 
@@ -111,6 +123,7 @@ const LoginWorkflow = () => {
 };
 
 const SignUpWorkflow = () => {
+  const [signUp] = useSignUpMutation();
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -126,8 +139,14 @@ const SignUpWorkflow = () => {
         .min(8, "Password is too short - should be 8 chars minimum.")
         .required("Required"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await signUp(values)
+        .then(() => {
+          navigate(appInternalRoutes.PROMPT);
+        })
+        .catch((error) => {
+          console.log("error at sign up method", error);
+        });
     },
   });
 
